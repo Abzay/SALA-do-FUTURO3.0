@@ -1,0 +1,32 @@
+import Pyro4
+import time
+import os
+
+# Configurações
+servidor = "localhost"
+porta = 50000
+usuario = "usuário"
+senha = "senha"
+turma = "turma"
+
+# Conectar ao servidor
+daemon = Pyro4.Daemon(host=servidor, port=porta)
+ns = Pyro4.locateNS(host=servidor, port=porta)
+servidor_sala = ns.lookup("sala_do_futuro_sp")
+
+# Realizar login
+sala_do_futuro_sp = Pyro4.Proxy(servidor_sala)
+sala_do_futuro_sp.login(usuario, senha)
+print("Login realizado com sucesso!")
+
+# Obter a lista de lições
+lições = sala_do_futuro_sp.obter_lições(turma)
+print("Obtendo lista de lições...")
+
+# Realizar cada lição
+for lição in lições:
+    sala_do_futuro_sp.realizar_lição(lição)
+    print(f"Lições {lição} realizada com sucesso!")
+
+# Conectar e desligar
+daemon.requestLoop()
